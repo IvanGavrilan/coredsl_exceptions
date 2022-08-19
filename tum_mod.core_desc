@@ -38,24 +38,160 @@ InstructionSet tum_ret extends RISCVBase {
         signed<32> ETISS_RETURNCODE_TEMPORARY5 = -133;
         signed<32> ETISS_RETURNCODE_TEMPORARY6 = -134;
         signed<32> ETISS_RETURNCODE_TEMPORARY7 = -135;
+        
+        
+        //machine-level and supervisor-level interrupts
+        unsigned int IRQ_S_SOFT  = 0x01;    //supervisor-level software interrupt
+        unsigned int IRQ_M_SOFT  = 0x03;    //machine-level software interrupt
+        unsigned int IRQ_S_TIMER = 0x05;    //supervisor-level timer insterrupt
+        unsigned int IRQ_M_TIMER = 0x07;    //machine-level timer interrupt
+        unsigned int IRQ_S_EXT   = 0x09;    //supervisor-level external interrupt
+        unsigned int IRQ_M_EXT   = 0x0b;    //machine-level external interrupt
+        
+        //masks for mstatus (machine-level status) register
+        //unsigned int MSTATUS_UIE  = 0x00000001;
+        unsigned int MSTATUS_SIE  = 0x00000002;
+        //unsigned int MSTATUS_HIE  = 0x00000004;
+        unsigned int MSTATUS_MIE  = 0x00000008;
+        //unsigned int MSTATUS_UPIE = 0x00000010;
+        unsigned int MSTATUS_SPIE = 0x00000020;
+        //unsigned int MSTATUS_HPIE = 0x00000040;
+        unsigned int MSTATUS_MPIE = 0x00000080;
+        unsigned int MSTATUS_SPP  = 0x00000100;
+        //unsigned int MSTATUS_HPP  = 0x00000600;
+        unsigned int MSTATUS_MPP  = 0x00001800;
+        unsigned int MSTATUS_FS   = 0x00006000;
+        unsigned int MSTATUS_XS   = 0x00018000;
+        unsigned int MSTATUS_MPRV = 0x00020000; //Modify PRiVeledge
+        unsigned int MSTATUS_SUM  = 0x00040000; //Supervisor User Memory
+        unsigned int MSTATUS_MXR  = 0x00080000; //Make eXecutable Readable
+        unsigned int MSTATUS_TVM  = 0x00100000; //Trap Virtual Memory
+        unsigned int MSTATUS_TW   = 0x00200000; //Timeout Wait
+        unsigned int MSTATUS_TSR  = 0x00400000; //Trap SRET
+        unsigned int MSTATUS_SD   = 0x80000000;
+        unsigned int MSTATUS32_SD = MSTATUS_SD;
+        unsigned <64> MSTATUS64_SD= MSTATUS_SD << 32;
+        
+        //masks for sstatus(supervisor-level status) register
+        unsigned int SSTATUS_SIE  = 0x00000002;
+        unsigned int SSTATUS_SPIE = 0x00000020;
+        unsigned int SSTATUS_SPP  = 0x00000100;
+        unsigned int SSTATUS_FS   = 0x00006000;
+        unsigned int SSTATUS_XS   = 0x00018000;
+        unsigned int SSTATUS_SUM  = 0x00040000;
+        unsigned int SSTATUS_MXR  = 0x00080000;
+        unsigned int SSTATUS_SD   = 0x80000000;
+        unsigned int SSTATUS32_SD = SSTATUS_SD;
+        unsigned <64> SSTATUS64_SD= SSTATUS_SD << 32;
+        
+        //masks for mip (machine interrupt pending) register
+        unsigned int MIP_SSIP = (1 << IRQ_S_SOFT);  //supervisor-level pending software interrupt
+        unsigned int MIP_MSIP = (1 << IRQ_M_SOFT);  //machine-level pending software interrupt
+        unsigned int MIP_STIP = (1 << IRQ_S_TIMER); //supervisor-level pending timer interrupt
+        unsigned int MIP_MTIP = (1 << IRQ_M_TIMER); //machine-level pending timer interrupt
+        unsigned int MIP_SEIP = (1 << IRQ_S_EXT);   //supervisor-level pending external interrupt
+        unsigned int MIP_MEIP = (1 << IRQ_M_EXT);   //machine-level pending external interrupt
+        
+        //masks for mie (machine interrupt enable) register
+        unsigned int MIE_SSIE = (1 << IRQ_S_SOFT);  //enable supervisor-level software interrupts
+        unsigned int MIE_MSIE = (1 << IRQ_M_SOFT);  //enable machine-level software interrupts
+        unsigned int MIE_STIE = (1 << IRQ_S_TIMER); //enable supervisor-level timer interrupts
+        unsigned int MIE_MTIE = (1 << IRQ_M_TIMER); //enable machine-level timer interrupts
+        unsigned int MIE_SEIE = (1 << IRQ_S_EXT);   //enable supervisor-level external interrupts
+        unsigned int MIE_MEIE = (1 << IRQ_M_EXT);   //encale machine-level external interrupts
+        
+        //mode priviledge levels
+        unsigned int PRV_U = 0; // \/
+        unsigned int PRV_S = 1; // \/
+        unsigned int PRV_H = 2; // \/
+        unsigned int PRV_M = 3; // \/
+        
+        //machine CSR registers
+        unsigned int MVENDORID  = 0xF11;    //vendor ID
+        unsigned int MARCHID    = 0xF12;    //architecture ID
+        unsigned int MIMPID     = 0xF13;    //implementation ID
+        unsigned int MHARTID    = 0xF14;    //hardware thread ID
+        unsigned int MCONFIGPTR = 0xF15;    //pointer to configuration data structure
+        unsigned int MSTATUS    = 0x300;    //machine status register
+        unsigned int MISA       = 0x301;    //isa and extensions
+        unsigned int MEDELEG    = 0x302;    //machine exception delegation register
+        unsigned int MIDELEG    = 0x303;    //machine interrupt delegation register
+        unsigned int MIE        = 0x304;    //machine interrupt enable register
+        unsigned int MTVEC      = 0x305;    //machine trap-handler base address
+        unsigned int MCOUNETREN = 0x306;    //machine counter enable
+        unsigned int MSTATUSH   = 0x310;    //additional machine status register, RV32 only
+        unsigned int MSCRATCH   = 0x340;    //scratch register for machine trap handlers
+        unsigned int MEPC       = 0x341;    //machine exception program counter
+        unsigned int MCAUSE     = 0x342;    //machine trap cause
+        unsigned int MTVAL      = 0x343;    //machine bad address or instruction
+        unsigned int MIP        = 0x344;    //machine interrupt pending register
+        unsigned int MTINST     = 0x34A;    //machine trap instruction
+        unsigned int MTVAL2     = 0x34B;    //machine bad quest physical address
+        unsigned int MENVCFG    = 0x30A;    //machine environment configuration register
+        unsigned int MENVCFGH   = 0x31A;    //additional MENVCFG, RV32 only
+        unsigned int MSECCFG    = 0x747;    //machine security configuration register
+        unsigned int MSECCFGH   = 0x757;    //additional MSECCFG, RV32 only
+        unsigned int CPM        = 0xC10;    //current priviledge mode (not declared in the specification)
+        
+        //register unsigned<XLEN> CSR[CSR_SIZE];
+        unsigned<XLEN>& CSR_MVENDORID  = CSR[MVENDORID];
+        unsigned<XLEN>& CSR_MARCHID    = CSR[MARCHID];
+        unsigned<XLEN>& CSR_MIMPID     = CSR[MIMPID];
+        unsigned<XLEN>& CSR_MHARTID    = CSR[MHARTID];
+        unsigned<XLEN>& CSR_MCONFIGPTR = CSR[MCONFIGPTR];
+        unsigned<XLEN>& CSR_MSTATUS    = CSR[MSTATUS];
+        unsigned<XLEN>& CSR_MISA       = CSR[MISA];
+        unsigned<XLEN>& CSR_MEDELEG    = CSR[MEDELEG];
+        unsigned<XLEN>& CSR_MIDELEG    = CSR[MIDELEG];
+        unsigned<XLEN>& CSR_MIE        = CSR[MIE];
+        unsigned<XLEN>& CSR_MTVEC      = CSR[MTVEC];
+        unsigned<XLEN>& CSR_MCOUNTEREN = CSR[MCOUNETREN];
+        unsigned<XLEN>& CSR_MSTATUSH   = CSR[MSTATUSH];    //RV32 only
+        unsigned<XLEN>& CSR_MSCRATCH   = CSR[MSCRATCH];
+        unsigned<XLEN>& CSR_MEPC       = CSR[MEPC];
+        unsigned<XLEN>& CSR_MCAUSE     = CSR[MCAUSE];
+        unsigned<XLEN>& CSR_MTVAL      = CSR[MTVAL];
+        unsigned<XLEN>& CSR_MIP        = CSR[MIP];
+        unsigned<XLEN>& CSR_MTINST     = CSR[MTINST];
+        unsigned<XLEN>& CSR_MTVAL2     = CSR[MTVAL2];
+        unsigned<XLEN>& CSR_MENVCFG    = CSR[MENVCFG];
+        unsigned<XLEN>& CSR_MENVCFGH   = CSR[MENVCFGH];    //RV32 only
+        unsigned<XLEN>& CSR_MSECCFG    = CSR[MSECCFG];
+        unsigned<XLEN>& CSR_MSECCFGH   = CSR[MSECCFGH];    //RV32 only
+        register unsigned<XLEN> CSR_CPM;         //current priviledge mode
+
     }
 
     functions {
+        void ExceptionEntry_Machine(unsigned<XLEN> cause){
+        
+            CSR_MCAUSE  = cause;
+            CSR_MEPC    = PC + 4;       //-4
+            CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPIE) | (((CSR_MSTATUS & MSTATUS_MIE) >> MSTATUS_MIE) << MSTATUS_MPIE);
+            CSR_MSTATUS = CSR_MSTATUS & ~MSTATUS_MIE;
+            CSR_MSTATUS = CSR_MSTATUS ^ (CSR_CPM << 11) ^ (CSR_MSTATUS & MSTATUS_MPP);
+            CSR_CPM     = PRV_M;
+            PC          = CSR_MTVEC & ~0x03;
+        }
+         
+        void ExceptionReturn_Machine(){
+            CSR_MCAUSE  = 0;
+            CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MIE) | ((CSR_MSTATUS & MSTATUS_MPIE >> MSTATUS_MPIE) << MSTATUS_MIE);
+            CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPIE) ^ MSTATUS_MPIE;
+            CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPP) | (PRV_M << 11);
+            CSR_CPM     = (CSR_MSTATUS & MSTATUS_MPP) >> 11;
+            PC          = CSR_MEPC;
+        }
+    
         signed<32> raise(int irq, int mcause) [[etiss_exc_entry]] {
-            if (irq != 0) {
-                return ETISS_RETURNCODE_INTERRUPT;
-            } else {
-                if (mcause == RV_CAUSE_MISALIGNED_FETCH || mcause == RV_CAUSE_FETCH_ACCESS) return ETISS_RETURNCODE_IBUS_READ_ERROR;
-                if (mcause == RV_CAUSE_ILLEGAL_INSTRUCTION) return ETISS_RETURNCODE_ILLEGALINSTRUCTION;
-                if (mcause == RV_CAUSE_BREAKPOINT) return ETISS_RETURNCODE_CPUFINISHED;
-                if (mcause == RV_CAUSE_MISALIGNED_LOAD || mcause == RV_CAUSE_LOAD_ACCESS) return ETISS_RETURNCODE_DBUS_READ_ERROR;
-                if (mcause == RV_CAUSE_MISALIGNED_STORE || mcause == RV_CAUSE_STORE_ACCESS) return ETISS_RETURNCODE_DBUS_WRITE_ERROR;
-                if (mcause == RV_CAUSE_USER_ECALL || mcause == RV_CAUSE_SUPERVISOR_ECALL || mcause == RV_CAUSE_VIRTUAL_SUPERVISOR_ECALL || mcause == RV_CAUSE_MACHINE_ECALL) return ETISS_RETURNCODE_SYSCALL;
-                if (mcause == RV_CAUSE_FETCH_PAGE_FAULT || mcause == RV_CAUSE_FETCH_GUEST_PAGE_FAULT) return ETISS_RETURNCODE_INSTR_PAGEFAULT;
-                if (mcause == RV_CAUSE_LOAD_PAGE_FAULT || mcause == RV_CAUSE_LOAD_GUEST_PAGE_FAULT) return ETISS_RETURNCODE_LOAD_PAGEFAULT;
-                if (mcause == RV_CAUSE_STORE_PAGE_FAULT || mcause == RV_CAUSE_STORE_GUEST_PAGE_FAULT) return ETISS_RETURNCODE_STORE_PAGEFAULT;
-                return ETISS_RETURNCODE_ILLEGALINSTRUCTION;
-            }
+            CSR_MCAUSE  = mcause;
+            CSR_MEPC    = PC + 4;       //-4
+            CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPIE) | (((CSR_MSTATUS & MSTATUS_MIE) >> MSTATUS_MIE) << MSTATUS_MPIE);
+            CSR_MSTATUS = CSR_MSTATUS & ~MSTATUS_MIE;
+            CSR_MSTATUS = CSR_MSTATUS ^ (CSR_CPM << 11) ^ (CSR_MSTATUS & MSTATUS_MPP);
+            CSR_CPM     = PRV_M;
+            PC          = CSR_MTVEC & ~0x03;
+            return 0;
         }
 
         void translate_exc_code(int cause) [[etiss_mem_exc_entry=MEM]] {
@@ -98,12 +234,12 @@ InstructionSet tum_ret extends RISCVBase {
         MRET [[no_cont]] {
             encoding: 7'b0011000 :: 5'b00010 :: 5'b00000 :: 3'b000 :: 5'b00000 :: 7'b1110011;
             behavior: {
-                CSR[3088] = (CSR[RV_CSR_MSTATUS] & 0x1800) >> 11;
-                CSR[RV_CSR_MSTATUS] ^= (CSR[RV_CSR_MSTATUS] & 0x1800);
-                CSR[RV_CSR_MSTATUS] ^= ((CSR[RV_CSR_MSTATUS] & 0x80) >> 4) ^ (CSR[RV_CSR_MSTATUS] & 0x8);
-                PC = CSR[RV_CSR_MEPC];
-                CSR[0] = CSR[RV_CSR_MSTATUS];
-                CSR[RV_CSR_SSTATUS] = CSR[RV_CSR_MSTATUS];
+		    CSR_MCAUSE  = 0;
+		    CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MIE) | ((CSR_MSTATUS & MSTATUS_MPIE >> MSTATUS_MPIE) << MSTATUS_MIE);
+		    CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPIE) ^ MSTATUS_MPIE;
+		    CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPP) | (PRV_M << 11);
+		    CSR_CPM     = (CSR_MSTATUS & MSTATUS_MPP) >> 11;
+		    PC          = CSR_MEPC;
             }
         }
     }
