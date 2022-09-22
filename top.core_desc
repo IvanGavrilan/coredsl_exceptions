@@ -1,9 +1,9 @@
-import "rv_base/RV32I.core_desc"
-import "rv_base/RV64I.core_desc"
-import "rv_base/RVM.core_desc"
-import "rv_base/RVC.core_desc"
-import "rv_base/RVD.core_desc"
-import "rv_base/RVF.core_desc"
+import "RV32I.core_desc"
+import "RV64I.core_desc"
+import "RVM.core_desc"
+import "RVC.core_desc"
+import "RVD.core_desc"
+import "RVF.core_desc"
 import "tum_mod.core_desc"
 
 
