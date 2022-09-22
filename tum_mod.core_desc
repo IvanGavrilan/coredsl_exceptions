@@ -158,7 +158,7 @@ InstructionSet tum_ret extends RISCVBase {
         unsigned<XLEN>& CSR_MENVCFGH   = CSR[MENVCFGH];    //RV32 only
         unsigned<XLEN>& CSR_MSECCFG    = CSR[MSECCFG];
         unsigned<XLEN>& CSR_MSECCFGH   = CSR[MSECCFGH];    //RV32 only
-        register unsigned<XLEN> CSR_CPM;         //current priviledge mode
+        register unsigned<XLEN> CSR_CPM;         //priviledge mode register
 
     }
 
@@ -166,7 +166,7 @@ InstructionSet tum_ret extends RISCVBase {
         void ExceptionEntry_Machine(unsigned<XLEN> cause){
         
             CSR_MCAUSE  = cause;
-            CSR_MEPC    = PC + 4;       //-4
+            CSR_MEPC    = PC;
             CSR_MSTATUS = (CSR_MSTATUS & ~MSTATUS_MPIE) | (((CSR_MSTATUS & MSTATUS_MIE) >> MSTATUS_MIE) << MSTATUS_MPIE);
             CSR_MSTATUS = CSR_MSTATUS & ~MSTATUS_MIE;
             CSR_MSTATUS = CSR_MSTATUS ^ (CSR_CPM << 11) ^ (CSR_MSTATUS & MSTATUS_MPP);
